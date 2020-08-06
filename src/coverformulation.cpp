@@ -1,73 +1,89 @@
-#include "coverformulation.h"
-#include "gurobi_c++.h"
+#include "../inc/coverformulation.h"
 
-// ------ Return Vector of Doubles - Current Best Solution ------
+CoverFormulation::CoverFormulation(const SCBGraph& G) {
+    // ------ Initialize model and environment ------
+    covenv = new GRBEnv();
+    covmodel = new GRBModel(*covenv);
+    covmodel->set(GRB_IntAttr_ModelSense, 1);
 
-std::vector<double> SCBFormulation(const SCBGraph &G, const std::vector<double> &z_bar) {
+    n = G.n;
+    m = G.m;
 
-    // ------ Initialize Model and Environment ------
-    
-    GRBEnv *env = new GRBEnv();
-    GRBModel scmodel = GRBModel(*env);
-
-    GRBVar *x = new GRBVar[G.n];
-    GRBVar *y = new GRBVar[G.n];
-
-    // ------ Initialize Variables ------
-
-    std::string varName; 
-
-    for (int k = 0; k < G.m; k++) {
+    // ------ Decision variables ------
+    std::string varname; 
+    for (int k = 0; k < m; k++) {
         // for each S_vertex k, initialize z_k, binary variable with lb 0, ub 1, and cost 1.0
-        varName = "x_" + std::to_string(k);
-        x[k] = scmodel.addVar(0.0, 1.0, 1.0, GRB_BINARY, varName);
+        varname = "x_" + std::to_string(k);
+        x.push_back(covmodel->addVar(0.0, 1.0, 1.0, GRB_BINARY, varname));
     }
 
-    for (int i = 0; i < G.n; i++) {
-        // for each U_vertex i, initialize y_i, binary variable with lb 0, ub 1, and cost p_i
-        varName = "y_" + std::to_string(i);
-        y[i] = scmodel.addVar(0.0, 1.0, G.u_vertices[i]->cost, GRB_BINARY, varName);
+    for (int i = 0; i < n; i++) {
+        // for each U_vertex i, initialize y_i, binary variable with lb 0, ub 1, and cost penalty_i
+        varname = "y_" + std::to_string(i);
+        y.push_back(covmodel->addVar(0.0, 1.0, G.u_costs[i], GRB_BINARY, varname));
     }
 
     // ------ Initialize Constraints ------
-    
-    // ------ Set-Covering Constraints ------
-    std::vector<Vertex*> curr_neighbors; // vector to store neighbors of current element/u_vertex i
-    std::vector<const int> cn_sizes; // vector to store size of neighborhood
-    GRBLinExpr constr; // memory allocation for LINEXPR constraint object 
+    // we SET the set-covering constraints, the blocking constraints are in the set_bounds() method
+    GRBLinExpr constr; // LINEXPR constraint object 
+    int start_index; // start delimeter for neighboorhood of current i in u_vertices 
+    int end_index; // end delimeter for neighboorhood of current i in u_vertices
 
-    for (int i = 0; i < G.n; i++) {
+    for (int i = 0; i < n; i++) {
         constr = 0;
-        curr_neighbors = G.u_vertices[i]->neighbors;
-        cn_sizes.push_back(curr_neighbors.size());
+        start_index = G.un_indexes[i];
+        end_index = G.un_indexes[i+1];
 
         // build set_covering constraint for element/u_vertex i
-        for (int k = 0; k < cn_sizes[i]; k++) {
-            constr += x[curr_neighbors[k]->name]; // add x_k to constraint LHS
+        for (int k = start_index; k < end_index; k++) {
+            constr += x[G.u_neighbors[k]]; // add x_k to constraint LHS
         }
 
-        scmodel.addConstr(constr, GRB_GREATER_EQUAL, 1.0); // add set-covering constraint
-
+        constr += y[i]; // add y_i to the constraint LHS
+        covmodel->addConstr(constr, GRB_GREATER_EQUAL, 1.0); // add set-covering constraint
     }
 
-    // ------ Z-Bar Blocking Constraints ------
-    for (int k = 0; k < G.m; k++) {
-        // add a blocking constraint for every subset/s_vertex s_k 
-        scmodel.addConstr(x[k], GRB_LESS_EQUAL, (1.0 - z_bar[k]));
+    covmodel->update();
+    // covmodel->write("../cover_model.mst");
+}
+
+void CoverFormulation::set_bounds(std::vector<GRBVar>& z_bar) {
+    for (int k = 0; k < m; k++) {
+        // for each s_k in s_vertices, check the interdiction binary in z_bar
+        // if it is 1, we set the upper bound on x_k to 0
+        // if it is 0, we set the upper bound on x_k to 1
+        if (z_bar[k].get(GRB_DoubleAttr_X) > 0.5) {
+            x[k].set(GRB_DoubleAttr_UB, 0);
+        }
+        else {
+            x[k].set(GRB_DoubleAttr_UB, 1);
+        }
     }
-    
-    // ------ Optimize ------
+    covmodel->update();
+}
 
-    scmodel.optimize();
+std::vector<double> CoverFormulation::solve() {
+    try {
+        // ------ Optimize ------
+        covmodel->optimize();
 
-    // ------ Output ------
-    
-    std::vector<double> solution;
-    
-    for (int k = 0; k < G.m; k++) {
-        solution.push_back(x[k].get(GRB_DoubleAttr_X));
+        // ------ Output ------
+        // solution[0] will be the objective value
+        // solution[1...m+1] will be the variables
+        std::vector<double> solution;
+        solution.push_back(covmodel->get(GRB_DoubleAttr_ObjVal));
+
+        for (int k = 0; k < m; k++) {
+            solution.push_back(x[k].get(GRB_DoubleAttr_X));
+        }
+
+        return solution;
     }
-
-    return solution;
-    
+    catch (GRBException e) {
+        std::cout << "[SRCFILE:COVERFORMULATION.CPP::SOLVE()]Error code: "<< e.getErrorCode() << "\n";
+        std::cout << e.getMessage() << "\n";
+    }
+    catch (...) {
+        std::cout << "Other error during optimization.\n";
+    }
 }

@@ -4,8 +4,8 @@
             "name": "Mac",
             "includePath": [
             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1",
-            "/Library/gurobi811/mac64/include",
-            "${workspaceFolder}/inc/"],
+            "/Library/gurobi902/mac64/include",
+            "${workspaceFolder}/inc"],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c11",
