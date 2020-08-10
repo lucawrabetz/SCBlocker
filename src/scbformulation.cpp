@@ -1,6 +1,6 @@
 #include "scbformulation.h"
 
-SCBFormulation::SCBFormulation(const SCBGraph&& G, int the_r) {
+SCBFormulation::SCBFormulation(SCBGraph& G, int the_r) {
     // ------ Initialize model and environment ------
     scbenv = new GRBEnv();
     scbmodel = new GRBModel(*scbenv);
@@ -20,6 +20,7 @@ SCBFormulation::SCBFormulation(const SCBGraph&& G, int the_r) {
     }
 
     // ----- No Constraints initially - just lazy cuts -----
+    
 
 }
 
@@ -27,7 +28,7 @@ SCBFormulation::SCBFormulation(const SCBGraph&& G, int the_r) {
 void SCBFormulation::solve() {
     try {
         // ----- Initialize Set-Cover Separation Object -----
-        sep = SCSeparation(&z, &&G, r);
+        sep = SCSeparation(z, G, r);
 
         // ----- Set Callback on Model -----
         scbmodel.setCallback(&sep);

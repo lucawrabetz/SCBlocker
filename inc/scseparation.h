@@ -15,7 +15,7 @@
 
 class SCSeparation : public GRBCallback {
 public:
-    std::vector<GRBVar>* z_bar;
+    std::vector<GRBVar> z_bar;
     std::vector<double> x_bar;
     GRBLinExpr new_cut; 
 
@@ -25,8 +25,7 @@ public:
     int lazyCuts; 
     CoverFormulation cover;
 
-    SCSeparation();
-    SCSeparation(std::vector<GRBVar>& the_z_bar, const SCBGraph&& the_G, int the_r);
+    SCSeparation(std::vector<GRBVar>& the_z_bar, SCBGraph& the_G, int the_r);
 
 protected:
     void callback();

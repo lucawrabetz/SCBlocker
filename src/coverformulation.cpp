@@ -1,6 +1,11 @@
-#include "../inc/coverformulation.h"
+#include "coverformulation.h"
 
-CoverFormulation::CoverFormulation(const SCBGraph& G) {
+CoverFormulation::CoverFormulation() {
+    n = 0;
+    m = 0; 
+}
+
+CoverFormulation::CoverFormulation(SCBGraph& G) {
     // ------ Initialize model and environment ------
     covenv = new GRBEnv();
     covmodel = new GRBModel(*covenv);
@@ -20,7 +25,7 @@ CoverFormulation::CoverFormulation(const SCBGraph& G) {
     for (int i = 0; i < n; i++) {
         // for each U_vertex i, initialize y_i, binary variable with lb 0, ub 1, and cost penalty_i
         varname = "y_" + std::to_string(i);
-        y.push_back(covmodel->addVar(0.0, 1.0, G.u_costs[i], GRB_BINARY, varname));
+        y.push_back(covmodel->addVar(0.0, 1.0, G.u_costs[i], GRB_CONTINUOUS, varname));
     }
 
     // ------ Initialize Constraints ------
@@ -63,6 +68,7 @@ void CoverFormulation::set_bounds(std::vector<GRBVar>& z_bar) {
 }
 
 std::vector<double> CoverFormulation::solve() {
+    std::vector<double> solution;
     try {
         // ------ Optimize ------
         covmodel->optimize();
@@ -70,7 +76,6 @@ std::vector<double> CoverFormulation::solve() {
         // ------ Output ------
         // solution[0] will be the objective value
         // solution[1...m+1] will be the variables
-        std::vector<double> solution;
         solution.push_back(covmodel->get(GRB_DoubleAttr_ObjVal));
 
         for (int k = 0; k < m; k++) {
@@ -86,4 +91,5 @@ std::vector<double> CoverFormulation::solve() {
     catch (...) {
         std::cout << "Other error during optimization.\n";
     }
+    return solution;
 }

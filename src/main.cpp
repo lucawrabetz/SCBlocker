@@ -1,16 +1,15 @@
-#include "../inc/coverformulation.h"
+#include "scbformulation.h"
 
 int main() {
     setenv("GRB_LICENSE_FILE", "/Users/lucawrabetz/gurobi.lic", 1);
     
     try {
-        const std::string datafile = "dat/example1.graph";
-        const SCBGraph G = SCBGraph(datafile);
-        
-        CoverFormulation test = CoverFormulation(G);
-        
+        const std::string datafile = "dat/example2.graph";
+        SCBGraph G = SCBGraph(datafile);
+        SCBFormulation SCB = SCBFormulation(&G, 2);
+
         std::vector<double> sol;
-        sol = test.solve();
+        sol = SCB.solve();
 
         std::cout << "Obj: " << sol[0] << "\n";
 

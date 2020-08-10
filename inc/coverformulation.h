@@ -1,5 +1,5 @@
 #include "graph.h"
-#include "/Library/gurobi902/mac64/include/gurobi_c++.h"
+#include "gurobi_c++.h"
 
 /* we define the CoverFormulation class containing all relevant objects to exist within the lifetime of the SCB algorithm, 
    solving the set-covering instance given by current blocking variables when called upon by the callback object class, SCSeparation
@@ -25,7 +25,8 @@ private:
     std::vector<GRBVar> y;
 
 public:
-    CoverFormulation(const SCBGraph& G);
+    CoverFormulation();
+    CoverFormulation(SCBGraph& G);
     void set_bounds(std::vector<GRBVar>& z_bar);
     std::vector<double> solve();
 };
