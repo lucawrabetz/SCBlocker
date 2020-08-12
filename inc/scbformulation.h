@@ -19,7 +19,7 @@ private:
     GRBEnv* scbenv;
     GRBModel* scbmodel;
 
-    SCBGraph& G;
+    SCBGraph* G;
 
     int n;
     int m;
@@ -29,7 +29,7 @@ private:
     SCSeparation sep;
 
 public:  
-    SCBFormulation(SCBGraph& G, int the_r);
-    void solve();
+    SCBFormulation(SCBGraph* G, int the_r);
+    std::vector<double> solve();
     void printSol();
 };

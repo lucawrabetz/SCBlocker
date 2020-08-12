@@ -1,20 +1,23 @@
-#include "scbformulation.h"
+#include "../inc/scbformulation.h"
 
 int main() {
     setenv("GRB_LICENSE_FILE", "/Users/lucawrabetz/gurobi.lic", 1);
     
     try {
         const std::string datafile = "dat/example2.graph";
-        SCBGraph G = SCBGraph(datafile);
-        SCBFormulation SCB = SCBFormulation(&G, 2);
+        SCBGraph* G = new SCBGraph(datafile);
+        SCBFormulation SCB = SCBFormulation(G, 2);
 
         std::vector<double> sol;
         sol = SCB.solve();
 
-        std::cout << "Obj: " << sol[0] << "\n";
+        if (sol.size() > 0) {
+            std::cout << "Obj: " << sol[0] << "\n";
 
-        for (int k = 1; k < G.m+1; k++) {
-            std::cout << "x_" + std::to_string(k-1) << ": " << sol[k] << "\n";
+            for (int k = 1; k < G->m+1; k++) {
+                // adjust the index (k-1) because the vector sol has the obj_val in index 0
+                std::cout << "z_" + std::to_string(k-1) << ": " << sol[k] << "\n";
+            }
         }
     }
     catch (GRBException& ex) {

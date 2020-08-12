@@ -1,8 +1,8 @@
-#include "scseparation.h"
+#include "../inc/scseparation.h"
 
-SCSeparation::SCSeparation(std::vector<GRBVar>& the_z_bar, SCBGraph& the_G, int the_r) {
-    m = the_G.m;
-    n = the_G.n; 
+SCSeparation::SCSeparation(std::vector<GRBVar>& the_z_bar, SCBGraph* the_G, int the_r) {
+    m = the_G->m;
+    n = the_G->n; 
     r = the_r;
     z_bar = the_z_bar;
     lazyCuts = 0;
@@ -14,7 +14,13 @@ void SCSeparation::callback(){
     if (where == GRB_CB_MIPSOL) {      
         // set-covering constraints stay the same
         // blocking constraints: loop through zbar - change upper bounds on x (0,1) based on zbar, make sure you have both and if and an else   
-        cover.set_bounds(z_bar);
+        double *z_bar_now = new double [m];
+        for (int k = 0; k < m; k++){
+            z_bar_now[k] = getSolution(z_bar[k]);
+        }
+        cover.set_bounds(z_bar_now);
+
+        delete z_bar_now;
         
         // solve follower set-covering model
         x_bar = cover.solve();
@@ -27,7 +33,7 @@ void SCSeparation::callback(){
             // loop through subsets and add to cut the ones that are in the optimal covering sol
             for (int k = 1; k < m + 1; k++){
                 if (x_bar[k] > 0.5) {
-                    new_cut += z_bar[k];
+                    new_cut += z_bar[k-1];
                 }  
             }
             

@@ -21,17 +21,31 @@ CXXFLAGS = -Wall -g -std=c++11
 # ****************************************************
 # Targets needed to bring the executable up to date
 
-main: main.o coverformulation.o graph.o vertex.o
-	$(CXX) $(CXXFLAGS) -o $(BINPATH)main main.o coverformulation.o graph.o vertex.o -I$(INCMAC) $(CPPLIBMAC)
+all:
+	$(CXX) $(CXXFLAGS) $(SRCPATH)scbformulation.cpp $(SRCPATH)scseparation.cpp $(SRCPATH)coverformulation.cpp \
+	$(SRCPATH)graph.cpp $(SRCPATH)vertex.cpp \
+	-o $(BINPATH)main $(SRCPATH)main.cpp -I$(INCMAC) $(CPPLIBMAC)
 
-main.o: $(INCPATH)graph.h $(SRCPATH)main.cpp
-	$(CXX) $(CXXFLAGS) -c $(SRCPATH)main.cpp
+clean:
+	rm -rf $(BINPATH)*.o $(BINPATH)*.dSYM $(BINPATH)main
 
-coverformulation.o: $(INCPATH)coverformulation.h $(SRCPATH)coverformulation.cpp
-	$(CXX) $(CXXFLAGS) -c $(SRCPATH)coverformulation.cpp
+# main: main.o coverformulation.o graph.o vertex.o
+# 	$(CXX) $(CXXFLAGS) -o $(BINPATH)main main.o scbformulation.o scseparation.o coverformulation.o graph.o vertex.o -I$(INCMAC) $(CPPLIBMAC)
 
-graph.o: $(INCPATH)graph.h $(SRCPATH)graph.cpp
-	$(CXX) $(CXXFLAGS) -c $(SRCPATH)graph.cpp
+# main.o: $(INCPATH)graph.h $(SRCPATH)main.cpp
+# 	$(CXX) $(CXXFLAGS) -c $(SRCPATH)main.cpp
 
-vertex.o: $(INCPATH)vertex.h $(SRCPATH)vertex.cpp
-	$(CXX) $(CXXFLAGS) -c $(SRCPATH)vertex.cpp
+# scbformulation.o: $(INCPATH)scbformulation.h $(SRCPATH)scbformulation.cpp
+# 	$(CXX) $(CXXFLAGS) -c $(SRCPATH)scbformulation.cpp
+
+# scseparation.o: $(INCPATH)scseparation.h $(SRCPATH)scseparation.cpp
+# 	$(CXX) $(CXXFLAGS) -c $(SRCPATH)scseparation.cpp
+
+# coverformulation.o: $(INCPATH)coverformulation.h $(SRCPATH)coverformulation.cpp
+# 	$(CXX) $(CXXFLAGS) -c $(SRCPATH)coverformulation.cpp
+
+# graph.o: $(INCPATH)graph.h $(SRCPATH)graph.cpp
+# 	$(CXX) $(CXXFLAGS) -c $(SRCPATH)graph.cpp
+
+# vertex.o: $(INCPATH)vertex.h $(SRCPATH)vertex.cpp
+# 	$(CXX) $(CXXFLAGS) -c $(SRCPATH)vertex.cpp

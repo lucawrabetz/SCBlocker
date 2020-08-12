@@ -25,7 +25,8 @@ public:
     int lazyCuts; 
     CoverFormulation cover;
 
-    SCSeparation(std::vector<GRBVar>& the_z_bar, SCBGraph& the_G, int the_r);
+    SCSeparation(){};
+    SCSeparation(std::vector<GRBVar>& the_z_bar, SCBGraph* the_G, int the_r);
 
 protected:
     void callback();
