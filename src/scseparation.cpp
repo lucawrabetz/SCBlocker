@@ -33,6 +33,7 @@ void SCSeparation::callback(){
             // loop through subsets and add to cut the ones that are in the optimal covering sol
             for (int k = 1; k < m + 1; k++){
                 if (x_bar[k] > 0.5) {
+                    // adjust the index (k-1) because the vector x_bar has the obj_val in index 0
                     new_cut += z_bar[k-1];
                 }  
             }
