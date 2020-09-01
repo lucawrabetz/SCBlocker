@@ -27,7 +27,7 @@ all:
 	-o $(BINPATH)main $(SRCPATH)main.cpp -I$(INCMAC) $(CPPLIBMAC)
 
 clean:
-	rm -rf $(BINPATH)*.o $(BINPATH)*.dSYM $(BINPATH)main
+	rm -rf *.o $(BINPATH)*.dSYM $(BINPATH)main
 
 # main: main.o coverformulation.o graph.o vertex.o
 # 	$(CXX) $(CXXFLAGS) -o $(BINPATH)main main.o scbformulation.o scseparation.o coverformulation.o graph.o vertex.o -I$(INCMAC) $(CPPLIBMAC)
