@@ -1,36 +1,51 @@
 # Makefile for SCBlocker
 
 # Paths/Environmental Variables
-
 SRCPATH	  = ./src/
 BINPATH	  = ./bin/
 DATPATH	  = ./dat/
 INCPATH   = ./inc/
 
-MACPATH   = /Library/gurobi902/mac64
-INCMAC    = $(MACPATH)/include
-CPPLIBMAC = -L$(MACPATH)/lib/ -lgurobi_c++ -lgurobi90 $(CPPSTDLIB) -lpthread -lm
+# CCR PATHS
+GRBCCRPATH = /util/academic/gurobi/gurobi900/linux64
+INCPATHCCR = $(GRBCCRPATH)/include
+CPPLIBCCR = -L$(GRBCCRPATH)/lib/ -lgurobi_g++5.2 -lgurobi90 $(CPPSTDLIB) -lpthread -lm
+
+# MAC PATHS
+GRBMACPATH = /Library/gurobi902/mac64
+INCPATHMAC = $(GRBMACPATH)/include
+CPPLIBMAC = -L$(GRBMACPATH)/lib/ -lgurobi_c++ -lgurobi90 $(CPPSTDLIB) -lpthread -lm
 
 
 # *****************************************************
 # Variables to control Makefile operation
 
-CXX = clang++
-CXXFLAGS = -Wall -g -std=c++11
+CXXCCR = g++
+CXXFLAGSCCR = -m64 -std=c++14 -g -Wall -Wextra -pedantic
+
+CXXMAC = clang++
+CXXFLAGSMAC = -Wall -g -std=c++11
 
 # ****************************************************
 # Targets needed to bring the executable up to date
 
+# FOR CCR 
+# all:
+# 	$(CXXCCR) $(CXXFLAGSCCR) $(SRCPATH)scbformulation.cpp $(SRCPATH)scseparation.cpp $(SRCPATH)coverformulation.cpp \
+# 	$(SRCPATH)graph.cpp $(SRCPATH)vertex.cpp \
+# 	-o $(BINPATH)main $(SRCPATH)main.cpp -I$(INCPATHCCR) $(CPPLIBCCR)
+
+# FOR MAC
 all:
-	$(CXX) $(CXXFLAGS) $(SRCPATH)scbformulation.cpp $(SRCPATH)scseparation.cpp $(SRCPATH)coverformulation.cpp \
+	$(CXXMAC) $(CXXFLAGSMAC) $(SRCPATH)scbformulation.cpp $(SRCPATH)scseparation.cpp $(SRCPATH)coverformulation.cpp \
 	$(SRCPATH)graph.cpp $(SRCPATH)vertex.cpp \
-	-o $(BINPATH)main $(SRCPATH)main.cpp -I$(INCMAC) $(CPPLIBMAC)
+	-o $(BINPATH)main $(SRCPATH)main.cpp -I$(INCPATHMAC) $(CPPLIBMAC)
 
 clean:
 	rm -rf *.o $(BINPATH)*.dSYM $(BINPATH)main
 
 # main: main.o coverformulation.o graph.o vertex.o
-# 	$(CXX) $(CXXFLAGS) -o $(BINPATH)main main.o scbformulation.o scseparation.o coverformulation.o graph.o vertex.o -I$(INCMAC) $(CPPLIBMAC)
+# 	$(CXX) $(CXXFLAGS) -o $(BINPATH)main main.o scbformulation.o scseparation.o coverformulation.o graph.o vertex.o -I$(INCPATHMAC) $(CPPLIBMAC)
 
 # main.o: $(INCPATH)graph.h $(SRCPATH)main.cpp
 # 	$(CXX) $(CXXFLAGS) -c $(SRCPATH)main.cpp
