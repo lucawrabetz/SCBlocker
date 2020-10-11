@@ -27,7 +27,6 @@ SCBGraph::SCBGraph(const std::string& filename) {
                 // lines 4... of the file are the edges
                 cline = line.c_str(); 
                 sscanf(cline, "%d %d", &u, &v);
-
                 temporary_neigh_s[u].neighbors.push_back(v);
                 temporary_neigh_u[v].neighbors.push_back(u);
             } 
@@ -78,7 +77,7 @@ SCBGraph::SCBGraph(const std::string& filename) {
             else {
                 // line 1 of the file is m and n and l 
                 cline = line.c_str(); 
-                sscanf(cline, "%d %d %d", &m, &n, &l);
+                sscanf(cline, "%d %d %d %d", &m, &n, &l, &r);
             }
             counter++;
         }

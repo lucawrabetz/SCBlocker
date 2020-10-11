@@ -1,12 +1,32 @@
 #include "../inc/scbformulation.h"
+#include <iostream> 
+#include <fstream>
+#include <sstream>
 
-int main() {
+std::string flt_str(float in) {
+        std::ostringstream ss;
+        ss << in;
+        std::string s(ss.str());
+        return s;
+}
+
+std::string dbl_str(double in) {
+        std::ostringstream ss;
+        ss << in;
+        std::string s(ss.str());
+        return s;
+}
+
+int main(int argc, char* argv[]) {
     setenv("GRB_LICENSE_FILE", "/Users/lucawrabetz/gurobi.lic", 1);
     
     try {
-        const std::string datafile = "dat/example2.graph";
+        const clock_t begin = clock();
+        // const std::string datafile = "/Users/lucawrabetz/Dropbox/SCB/graph_generator_SCB/dat/informs2020/instanceA0.graph";
+        const std::string datafile = argv[1];
+        const std::string outputfile = argv[2];
         SCBGraph* G = new SCBGraph(datafile);
-        SCBFormulation SCB = SCBFormulation(G, 2);
+        SCBFormulation SCB = SCBFormulation(G);
 
         std::vector<double> sol;
         sol = SCB.solve();
@@ -19,6 +39,18 @@ int main() {
                 std::cout << "z_" + std::to_string(k-1) << ": " << sol[k] << "\n";
             }
         }
+        std::ofstream myfile;
+        myfile.open(outputfile);
+
+        std::string lazy_cuts = flt_str(SCB.lazy_cuts);
+        std::string cut_density_avg = flt_str(SCB.cut_density_avg);
+        std::string avg_sep_time = flt_str(SCB.avg_sep_time);
+        std::string running_time = flt_str(SCB.running_time);
+        std::string gap = dbl_str(SCB.gap);
+
+        std::string outputfile_string = lazy_cuts + "," + cut_density_avg + "," + avg_sep_time + "," + running_time + "," + gap;
+        myfile << outputfile_string;
+        myfile.close();
     }
     catch (GRBException& ex) {
         std::cout << "[SRCFILE:MAIN.CPP]Error code: "<< ex.getErrorCode() << "\n";

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <time.h>
 #include "coverformulation.h"
 
 /* we define the SCSeparation class containing all relevant objects to generate cuts to the
@@ -23,11 +24,16 @@ public:
     int n;
     int r; 
     int lazyCuts; 
+    int temp_cut_cardinality;
+    std::vector<int> cut_cardinality;
+    std::vector<float> separation_times;
     CoverFormulation cover;
 
     SCSeparation(){};
-    SCSeparation(std::vector<GRBVar>& the_z_bar, SCBGraph* the_G, int the_r);
-
+    SCSeparation(std::vector<GRBVar>& the_z_bar, SCBGraph* the_G);
+    
+    float cut_density = 0;
+    float avg_separation_time = 0;
 protected:
     void callback();
     void printSeparation();

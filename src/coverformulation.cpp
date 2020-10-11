@@ -82,7 +82,6 @@ std::vector<double> CoverFormulation::solve() {
             solution.push_back(x[k].get(GRB_DoubleAttr_X));
 
         }
-        
         return solution;
     }
     catch (GRBException e) {

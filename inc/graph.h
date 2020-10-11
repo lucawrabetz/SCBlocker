@@ -27,7 +27,7 @@ public:
     const int debug_high = 1;
     const int debug_low = 0;
 
-    int m, n, l; // number of S_Vertices, number of U_Vertices, number of edges
+    int m, n, l, r; // number of S_Vertices, number of U_Vertices, number of edges
     std::vector<Vertex> s_vertices = {}; // vector of vertex objects for s_vertices, size m
     std::vector<Vertex> u_vertices = {}; // vector of vertex objects for u_vertices, size n
 

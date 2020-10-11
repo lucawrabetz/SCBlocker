@@ -28,8 +28,15 @@ private:
     std::vector<GRBVar> z;
     SCSeparation sep;
 
+    
+
 public:  
-    SCBFormulation(SCBGraph* G, int the_r);
+    float cut_density_avg = 0;
+    float lazy_cuts = 0;
+    float avg_sep_time = 0;
+    float running_time = 0;
+    double gap = 0;
+    SCBFormulation(SCBGraph* G);
     std::vector<double> solve();
     void printSol();
 };
