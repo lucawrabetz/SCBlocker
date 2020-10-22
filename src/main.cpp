@@ -22,11 +22,14 @@ int main(int argc, char* argv[]) {
     
     try {
         const clock_t begin = clock();
-        // const std::string datafile = "/Users/lucawrabetz/Dropbox/SCB/graph_generator_SCB/dat/informs2020/instanceA0.graph";
-        const std::string datafile = argv[1];
-        const std::string outputfile = argv[2];
+        const std::string datafile = "/Users/lucawrabetz/Dropbox/SCB/SCBlocker/dat/example1.graph";
+        const std::string outputfile = "test.txt";
+        const int max_gamma = 1;
+        // const std::string datafile = argv[1];
+        // const std::string outputfile = argv[2];
+        // const int max_gamma = std::stoi(argv[3]);
         SCBGraph* G = new SCBGraph(datafile);
-        SCBFormulation SCB = SCBFormulation(G);
+        SCBFormulation SCB = SCBFormulation(G, max_gamma);
 
         std::vector<double> sol;
         sol = SCB.solve();

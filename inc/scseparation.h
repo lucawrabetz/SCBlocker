@@ -20,6 +20,7 @@ public:
     std::vector<double> x_bar;
     GRBLinExpr new_cut; 
 
+    int max_gamma;
     int m; 
     int n;
     int r; 
@@ -29,13 +30,17 @@ public:
     std::vector<float> separation_times;
     CoverFormulation cover;
 
+    std::vector<int> covered; 
+    SCBGraph* G;
+
     SCSeparation(){};
-    SCSeparation(std::vector<GRBVar>& the_z_bar, SCBGraph* the_G);
+    SCSeparation(std::vector<GRBVar>& the_z_bar, SCBGraph* the_G, int the_max_gamma);
     
     float cut_density = 0;
     float avg_separation_time = 0;
 protected:
+    // bool SCSeparation::check_gammarobust(int gamma);
+    // void SCSeparation::covered_increment(bool up, int subset);
     void callback();
     void printSeparation();
-
 };

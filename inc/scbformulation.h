@@ -20,6 +20,7 @@ private:
     GRBModel* scbmodel;
 
     SCBGraph* G;
+    int max_gamma;
 
     int n;
     int m;
@@ -36,7 +37,7 @@ public:
     float avg_sep_time = 0;
     float running_time = 0;
     double gap = 0;
-    SCBFormulation(SCBGraph* G);
+    SCBFormulation(SCBGraph* G, const int the_max_gamma);
     std::vector<double> solve();
     void printSol();
 };

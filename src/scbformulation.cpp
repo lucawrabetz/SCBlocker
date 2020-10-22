@@ -1,6 +1,6 @@
 #include "../inc/scbformulation.h"
 
-SCBFormulation::SCBFormulation(SCBGraph* G) {
+SCBFormulation::SCBFormulation(SCBGraph* G, const int the_max_gamma) {
     // ------ Initialize model and environment ------
     scbenv = new GRBEnv();
     scbmodel = new GRBModel(*scbenv);
@@ -8,6 +8,7 @@ SCBFormulation::SCBFormulation(SCBGraph* G) {
     scbmodel->set(GRB_IntAttr_ModelSense, 1);
 
     // ------ Variables and int parameters ------
+    max_gamma = the_max_gamma;
     n = G->n;
     m = G->m;
     r = G->r;
@@ -21,7 +22,7 @@ SCBFormulation::SCBFormulation(SCBGraph* G) {
 
     // ----- No Constraints initially - just lazy cuts -----
     // ----- Initialize Set-Cover Separation Object -----
-    sep = SCSeparation(z, G);
+    sep = SCSeparation(z, G, max_gamma);
     scbmodel->set(GRB_DoubleParam_TimeLimit, 120);
 }
 

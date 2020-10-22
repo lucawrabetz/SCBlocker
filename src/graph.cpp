@@ -23,63 +23,65 @@ SCBGraph::SCBGraph(const std::string& filename) {
         std::vector<Neighborhood> temporary_neigh_u = {}; // temporary vector of neighbor class objects for each u_vertex, size n
 
         while (getline(myfile, line)) {
-            if (counter > 3) {
-                // lines 4... of the file are the edges
-                cline = line.c_str(); 
-                sscanf(cline, "%d %d", &u, &v);
-                temporary_neigh_s[u].neighbors.push_back(v);
-                temporary_neigh_u[v].neighbors.push_back(u);
-            } 
+            if (line != "") {
+                if (counter > 3) {
+                    // lines 4... of the file are the edges
+                    cline = line.c_str(); 
+                    sscanf(cline, "%d %d", &u, &v);
+                    temporary_neigh_s[u].neighbors.push_back(v);
+                    temporary_neigh_u[v].neighbors.push_back(u);
+                } 
 
-            else if (counter == 3) {
-                costs.clear();
-                std::stringstream ss(line);
-                int i = 0;
+                else if (counter == 3) {
+                    costs.clear();
+                    std::stringstream ss(line);
+                    int i = 0;
 
-                while (ss >> currentcost_str) {
-                    currentcost_int = std::stoi(currentcost_str, nullptr, 10);
-                    costs.push_back(currentcost_int);
+                    while (ss >> currentcost_str) {
+                        currentcost_int = std::stoi(currentcost_str, nullptr, 10);
+                        costs.push_back(currentcost_int);
 
-                    // add a temporary edge neighboorhood class for u
-                    Neighborhood neighborhood = Neighborhood(i);
-                    temporary_neigh_u.push_back(neighborhood);
+                        // add a temporary edge neighboorhood class for u
+                        Neighborhood neighborhood = Neighborhood(i);
+                        temporary_neigh_u.push_back(neighborhood);
 
-                    // initialize a new u_vertex for all 0...n-1, add to vector
-                    Vertex uvertex = Vertex(i, costs[i], false); 
-                    u_vertices.push_back(uvertex);
-                    u_costs.push_back(costs[i]);
-                    i++;
+                        // initialize a new u_vertex for all 0...n-1, add to vector
+                        Vertex uvertex = Vertex(i, costs[i], false); 
+                        u_vertices.push_back(uvertex);
+                        u_costs.push_back(costs[i]);
+                        i++;
+                    }
                 }
-            }
 
-            else if (counter == 2) {
-                // line 2 of the file are the blocking costs of S_vertices
-                costs.clear();
-                std::stringstream ss(line);
-                int k = 0;
+                else if (counter == 2) {
+                    // line 2 of the file are the blocking costs of S_vertices
+                    costs.clear();
+                    std::stringstream ss(line);
+                    int k = 0;
 
-                while (ss >> currentcost_str) {
-                    currentcost_int = std::stoi(currentcost_str, nullptr, 10);
-                    costs.push_back(currentcost_int);
+                    while (ss >> currentcost_str) {
+                        currentcost_int = std::stoi(currentcost_str, nullptr, 10);
+                        costs.push_back(currentcost_int);
 
-                    // add a temporary edge neighboorhood class for s
-                    Neighborhood neighborhood = Neighborhood(k);
-                    temporary_neigh_s.push_back(neighborhood);
+                        // add a temporary edge neighboorhood class for s
+                        Neighborhood neighborhood = Neighborhood(k);
+                        temporary_neigh_s.push_back(neighborhood);
 
-                    // initialize a new s_vertex for all 0...m-1, add to vector
-                    Vertex svertex = Vertex(k, costs[k], true); 
-                    s_vertices.push_back(svertex);
-                    s_costs.push_back(costs[k]);
-                    k++;
-                }   
-            }
+                        // initialize a new s_vertex for all 0...m-1, add to vector
+                        Vertex svertex = Vertex(k, costs[k], true); 
+                        s_vertices.push_back(svertex);
+                        s_costs.push_back(costs[k]);
+                        k++;
+                    }   
+                }
 
-            else {
-                // line 1 of the file is m and n and l 
-                cline = line.c_str(); 
-                sscanf(cline, "%d %d %d %d", &m, &n, &l, &r);
-            }
+                else {
+                    // line 1 of the file is m and n and l 
+                    cline = line.c_str(); 
+                    sscanf(cline, "%d %d %d %d", &m, &n, &l, &r);
+                }
             counter++;
+            }
         }
 
         // use the temporary edges neighbor classes to build the contiguous neighbor vectors
