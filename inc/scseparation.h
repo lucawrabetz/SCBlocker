@@ -24,8 +24,8 @@ public:
     int m; 
     int n;
     int r; 
-    int lazyCuts; 
     int temp_cut_cardinality;
+    std::vector<int> lazyCuts; 
     std::vector<int> cut_cardinality;
     std::vector<float> separation_times;
     CoverFormulation cover;

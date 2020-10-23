@@ -12,6 +12,9 @@ SCBFormulation::SCBFormulation(SCBGraph* G, const int the_max_gamma) {
     n = G->n;
     m = G->m;
     r = G->r;
+    for (int gamma = 0; gamma <= max_gamma; gamma++){
+        lazy_cuts.push_back(0);
+    }
 
     // ------ Decision variable - z_k for each s_k in S_vertices ------
     std::string varname;
@@ -43,8 +46,10 @@ std::vector<double> SCBFormulation::solve() {
         // ----- Optimize Model -----
         scbmodel->optimize(); 
         running_time = float(clock() - model_begin) / CLOCKS_PER_SEC;
-        lazy_cuts = sep.lazyCuts;
-
+        for (int gamma = 0; gamma <= max_gamma; gamma++){
+            lazy_cuts[gamma] = sep.lazyCuts[gamma];
+        }
+    
         for (int i = 0; i < sep.separation_times.size(); i++) {
             avg_sep_time += sep.separation_times[i]; 
         }

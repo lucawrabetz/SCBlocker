@@ -45,13 +45,16 @@ int main(int argc, char* argv[]) {
         std::ofstream myfile;
         myfile.open(outputfile);
 
-        std::string lazy_cuts = flt_str(SCB.lazy_cuts);
+        std::string lazy_cuts;
+        for (int gamma = 0; gamma <= max_gamma; gamma++){
+            lazy_cuts += flt_str(SCB.lazy_cuts[gamma]) + ",";
+        }
         std::string cut_density_avg = flt_str(SCB.cut_density_avg);
         std::string avg_sep_time = flt_str(SCB.avg_sep_time);
         std::string running_time = flt_str(SCB.running_time);
         std::string gap = dbl_str(SCB.gap);
 
-        std::string outputfile_string = lazy_cuts + "," + cut_density_avg + "," + avg_sep_time + "," + running_time + "," + gap;
+        std::string outputfile_string = lazy_cuts + cut_density_avg + "," + avg_sep_time + "," + running_time + "," + gap;
         myfile << outputfile_string;
         myfile.close();
     }

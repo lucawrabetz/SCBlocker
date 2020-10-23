@@ -33,7 +33,7 @@ private:
 
 public:  
     float cut_density_avg = 0;
-    float lazy_cuts = 0;
+    std::vector<float> lazy_cuts;
     float avg_sep_time = 0;
     float running_time = 0;
     double gap = 0;
