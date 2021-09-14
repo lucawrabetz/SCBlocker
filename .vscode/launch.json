@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+<<<<<<< HEAD
         {"name": "Launch C++ (MacOS Catalina)",
         "type": "lldb",
         "request": "launch",
@@ -12,6 +13,14 @@
         "cwd": "${workspaceFolder}",
         "preLaunchTask": "echo",
         "args": [],
+=======
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+>>>>>>> temp/master
         }
     ]
 }
