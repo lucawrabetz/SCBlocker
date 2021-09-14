@@ -31,3 +31,9 @@
 *.exe
 *.out
 *.app
+
+# Makefiles stay local 
+makefile 
+
+# dat stays local 
+/dat

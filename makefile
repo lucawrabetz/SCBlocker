@@ -41,8 +41,15 @@ all:
 	$(SRCPATH)graph.cpp $(SRCPATH)vertex.cpp \
 	-o $(BINPATH)main $(SRCPATH)main.cpp -I$(INCPATHMAC) $(CPPLIBMAC)
 
+justcover: 
+	$(CXXMAC) $(CXXFLAGSMAC) $(SRCPATH)coverformulation.cpp \
+	$(SRCPATH)graph.cpp $(SRCPATH)vertex.cpp \
+	-o $(BINPATH)cover $(SRCPATH)main2.cpp -I$(INCPATHMAC) $(CPPLIBMAC)
+
 clean:
 	rm -rf *.o $(BINPATH)*.dSYM $(BINPATH)main
+
+
 
 # main: main.o coverformulation.o graph.o vertex.o
 # 	$(CXX) $(CXXFLAGS) -o $(BINPATH)main main.o scbformulation.o scseparation.o coverformulation.o graph.o vertex.o -I$(INCPATHMAC) $(CPPLIBMAC)
